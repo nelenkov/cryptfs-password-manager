@@ -1,0 +1,25 @@
+<resources>
+
+    <string name="app_name">Cryptfs Password</string>
+    <string name="startup_message">This app changes your disk encryption password.\nIt REQUIRES root access to work.\n\nMake sure you remember your new password 
+        or you will NOT be able to use your device.\nUse at your own risk!</string>
+    <string name="title_activity_main">@string/app_name</string>
+    <string name="confirmation_dialog_title">Confirm password change</string>
+    <string name="confirmation_dialog_message">Are you sure you wanto change the 
+        device encryption password?\nYou will need to enter the new password 
+        at next boot, make sure you remember it!</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="failed_to_change_password">Failed to change device encryption password.</string>
+    <string name="successfuly_changed_password">Successfuly changed device encryption password.</string>
+    <string name="password_mismatch">Passwords don\'t match.</string>
+    <string name="confirmation_passwd_required">Confirmation password is required.</string>
+    <string name="new_passwd_required">New password is required.</string>
+    <string name="current_passwd_required">Current password is required.</string>
+    <string name="cannot_get_su">Cannot get superuser access, exiting.</string>
+    <string name="no_su_apk">No superuser package found, exiting.</string>
+    <string name="device_not_encrypted">This device is not encrypted, exiting.</string>
+    <string name="new_passwd_dialog_title">Password changed</string>
+    <string name="new_passwd_dialog_message">Successfully changed password.\n\nThe device encryption password is now: %s</string>
+    <string name="current_password_incorrect">The current encryption password is incorrect.</string>
+
+</resources>

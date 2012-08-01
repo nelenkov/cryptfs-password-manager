@@ -1,0 +1,6 @@
+<resources>
+
+    <style name="AppTheme" parent="android:Theme.Holo" />
+    <dimen name="control_margin">15dp</dimen>
+    <dimen name="border_margin">3dp</dimen>
+</resources>
