@@ -16,8 +16,8 @@ boot  the device. You will have to perform a factory reset, DELETING all your
 data. Make sure you take a full backup before using this tool, and REMEMBER THE
 PASSWORD. You have been warned, use at your own risk!
  
-Why use this
-------------
+Why and how to use this
+-----------------------
 
 Android 3.0 (Honeycomb) introduced disk encryption and it has been available on
 all subsequent versions. It encrypts the data partition with a key protected by
@@ -52,9 +52,15 @@ want this to happen:
 http://code.google.com/p/android/issues/detail?id=29468
 
 
+How to get it
+-------------
+
 The app is also available in the Google Play Store: 
 
 https://play.google.com/store/apps/details?id=org.nick.cryptfs.passwdmanager
+
+Acknowledgments
+---------------
 
 Borrows some code from https://github.com/project-voodoo/ota-rootkeeper-app, 
 under the WTFPL license. 
