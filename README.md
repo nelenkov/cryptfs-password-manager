@@ -45,6 +45,13 @@ If you change the device unlock password/PIN, the encryption password will be
 automatically changed as well. You need to use this tool again to change it 
 back, if required. 
 
+Once Android adds an official way (system UI) to change the passwords 
+independently, this tool will no longer be needed. Star this issue if you 
+want this to happen:
+
+http://code.google.com/p/android/issues/detail?id=29468
+
+
 The app is also available in the Google Play Store: 
 
 https://play.google.com/store/apps/details?id=org.nick.cryptfs.passwdmanager
