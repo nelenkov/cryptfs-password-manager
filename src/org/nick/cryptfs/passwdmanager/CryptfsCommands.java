@@ -2,11 +2,14 @@ package org.nick.cryptfs.passwdmanager;
 
 import java.util.List;
 
+import android.os.Build;
 import android.util.Log;
 
 public class CryptfsCommands {
 
     private static final String TAG = CryptfsCommands.class.getSimpleName();
+
+    private static final boolean IS_JB = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
 
     private static final String GET_PROP_CMD_PATH = "/system/bin/getprop";
     private static final String CRYPTO_STATE_PROP = "ro.crypto.state";
@@ -39,7 +42,12 @@ public class CryptfsCommands {
 
         String status = result.get(0);
         String[] fields = status.split(" ");
-        if (fields.length != 3) {
+        if (IS_JB && fields.length != 3) {
+            Log.wtf(TAG, "Unrecognized vdc output format: " + status);
+            return false;
+        }
+
+        if (!IS_JB && fields.length != 2) {
             Log.wtf(TAG, "Unrecognized vdc output format: " + status);
             return false;
         }
@@ -49,11 +57,8 @@ public class CryptfsCommands {
             return false;
         }
 
-        if (fields[2].equals(VDC_OK_RC)) {
-            return true;
-        }
-
-        return false;
+        return IS_JB ? fields[2].equals(VDC_OK_RC) : fields[1]
+                .equals(VDC_OK_RC);
     }
 
     public static boolean changeCryptfsPassword(String newPassword) {
