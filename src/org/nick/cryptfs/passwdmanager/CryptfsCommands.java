@@ -17,9 +17,9 @@ public class CryptfsCommands {
 
     private static final String VDC_CMD_PATH = "/system/bin/vdc";
     private static final String CRYPTFS_VERIFYPW_CMD = VDC_CMD_PATH
-            + " cryptfs verifypw %s";
+            + " cryptfs verifypw '%s'";
     private static final String CRYPTFS_CHANGEPW_CMD = VDC_CMD_PATH
-            + " cryptfs changepw %s";
+            + " cryptfs changepw '%s'";
 
     private static final String VDC_STATUS_OK = "200";
     private static final String VDC_OK_RC = "0";
