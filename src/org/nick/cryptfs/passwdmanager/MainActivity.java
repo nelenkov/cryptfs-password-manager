@@ -148,6 +148,13 @@ public class MainActivity extends Activity implements OnClickListener {
         confirmationDialog.show(getFragmentManager(), "confirmationDialog");
     }
 
+    private void showPasswordChangeErrorDialog() {
+        DialogFragment errorDialog = ErrorDialogFragment.newInstance(
+                getResources().getString(R.string.password_change_error),
+                getResources().getString(R.string.failed_to_change_password));
+        errorDialog.show(getFragmentManager(), "passwordChangeErrorDialog");
+    }
+
     private void changePasswd(String currentPasswd, String newPasswd) {
         changePasswdTask = new ChangePasswdTask(this);
         changePasswdTask.execute(currentPasswd, newPasswd);
@@ -195,8 +202,8 @@ public class MainActivity extends Activity implements OnClickListener {
                 return PASSWD_INVALID;
             }
 
-            return CryptfsCommands.changeCryptfsPassword(newPasswd) ? PASSWD_CHANGED
-                    : PASSWD_CHANGE_ERROR;
+            return CryptfsCommands.changeCryptfsPassword(newPasswd,
+                    currentPasswd) ? PASSWD_CHANGED : PASSWD_CHANGE_ERROR;
         }
 
         @Override
@@ -223,9 +230,7 @@ public class MainActivity extends Activity implements OnClickListener {
                         "successDialog");
                 break;
             case PASSWD_CHANGE_ERROR:
-
-                Toast.makeText(activity, R.string.failed_to_change_password,
-                        Toast.LENGTH_LONG).show();
+                activity.showPasswordChangeErrorDialog();
                 break;
             default:
                 // detached or cancelled, do nothing
