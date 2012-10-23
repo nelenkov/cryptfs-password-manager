@@ -9,7 +9,9 @@
         device encryption password?\nYou will need to enter the new password 
         at next boot, make sure you remember it!</string>
     <string name="invalid_password">Invalid password</string>
-    <string name="failed_to_change_password">Failed to change device encryption password.</string>
+    <string name="failed_to_change_password">Failed to change device encryption password.\n 
+        Use the \'vdc cryptfs changepw &lt;password&gt;\' command in a root shell 
+        to set the password manually BEFORE rebooting.</string>
     <string name="successfuly_changed_password">Successfuly changed device encryption password.</string>
     <string name="password_mismatch">Passwords don\'t match.</string>
     <string name="confirmation_passwd_required">Confirmation password is required.</string>
@@ -21,5 +23,6 @@
     <string name="new_passwd_dialog_title">Password changed</string>
     <string name="new_passwd_dialog_message">Successfully changed password.\n\nThe device encryption password is now: %s</string>
     <string name="current_password_incorrect">The current encryption password is incorrect.</string>
+    <string name="password_change_error">Password change error</string>
 
 </resources>
