@@ -24,14 +24,27 @@ public class CryptfsCommands {
     private static final String VDC_STATUS_OK = "200";
     private static final String VDC_OK_RC = "0";
 
-
     public CryptfsCommands() {
     }
 
     public static boolean checkCryptfsPassword(String password) {
         List<String> response = SuShell.runWithSu(String.format(
-                CRYPTFS_VERIFYPW_CMD, password));
+                CRYPTFS_VERIFYPW_CMD, escape(password)));
         return checkVdcResponse(response);
+    }
+
+    private static String escape(String str) {
+        // escape double quotes and backslashes
+        // FrameworkListener::dispatchCommand checks for this
+        String result = str.replaceAll("\\\"", "\\\\\"");
+        // only do this if the original string had a backslash
+        if (str.contains("\\")) {
+            result = result.replaceAll("\\\\", "\\\\\\\\");
+        }
+        // escape single quotes for the shell
+        result = result.replaceAll("'", "'\\\\''");
+
+        return result;
     }
 
     private static boolean checkVdcResponse(List<String> result) {
@@ -61,9 +74,27 @@ public class CryptfsCommands {
                 .equals(VDC_OK_RC);
     }
 
-    public static boolean changeCryptfsPassword(String newPassword) {
+    public static boolean changeCryptfsPassword(String newPassword,
+            String oldPassword) {
         List<String> response = SuShell.run("su",
-                String.format(CRYPTFS_CHANGEPW_CMD, newPassword));
+                String.format(CRYPTFS_CHANGEPW_CMD, escape(newPassword)));
+
+        boolean changeResult = checkVdcResponse(response);
+        boolean verifyResult = checkCryptfsPassword(newPassword);
+        if (!verifyResult) {
+            // rollback
+            boolean rollbackResult = changePasswordNoVerify(oldPassword);
+            Log.d(TAG, "Password rollback succeeded: " + rollbackResult);
+
+            return false;
+        }
+
+        return changeResult && verifyResult;
+    }
+
+    private static boolean changePasswordNoVerify(String newPassword) {
+        List<String> response = SuShell.run("su",
+                String.format(CRYPTFS_CHANGEPW_CMD, escape(newPassword)));
 
         return checkVdcResponse(response);
     }
