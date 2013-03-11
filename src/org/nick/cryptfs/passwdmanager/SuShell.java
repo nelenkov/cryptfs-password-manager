@@ -21,8 +21,8 @@ public class SuShell {
     // set to false for release
     static final boolean DEBUG = false;
 
-    private static final String CHAINSDD_SU = "com.noshufou.android.su";
-    private static final String CHAINFIRE_SU = "eu.chainfire.supersu";
+    private static final String[] SU_PACKAGES = { "com.noshufou.android.su",
+            "eu.chainfire.supersu", "com.koushikdutta.superuser" };
 
     private SuShell() {
     }
@@ -48,20 +48,14 @@ public class SuShell {
     }
 
     public static boolean isSuperUserInstalled(Context ctx) {
-        PackageInfo pi = findPackage(ctx, CHAINSDD_SU);
-        if (pi != null) {
-            if (DEBUG) {
-                Log.d(TAG, "Found superuser: " + pi.packageName);
+        for (String suPackage : SU_PACKAGES) {
+            PackageInfo pi = findPackage(ctx, suPackage);
+            if (pi != null) {
+                if (DEBUG) {
+                    Log.d(TAG, "Found superuser: " + pi.packageName);
+                }
+                return true;
             }
-            return true;
-        }
-
-        pi = findPackage(ctx, CHAINFIRE_SU);
-        if (pi != null) {
-            if (DEBUG) {
-                Log.d(TAG, "Found superuser: " + pi.packageName);
-            }
-            return true;
         }
 
         return false;
@@ -162,7 +156,7 @@ public class SuShell {
         for (String path : pathToTest) {
             File su = new File(path + "/su");
             if (su.exists()) {
-                // should check if it is suid 
+                // should check if it is suid
                 if (DEBUG) {
                     Log.d(TAG, "Found su at " + su.getAbsolutePath());
                 }

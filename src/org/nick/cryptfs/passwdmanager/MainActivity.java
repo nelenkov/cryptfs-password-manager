@@ -66,10 +66,12 @@ public class MainActivity extends Activity implements OnClickListener {
             finish();
         }
 
-        if (!SuShell.isSuperUserInstalled(getApplicationContext())) {
-            Toast.makeText(this, R.string.no_su_apk, Toast.LENGTH_LONG).show();
-            finish();
-        }
+        // CM embeds Superuser in the settings package, so detecting by 
+        // package name is not really doable any more
+        //        if (!SuShell.isSuperUserInstalled(getApplicationContext())) {
+        //            Toast.makeText(this, R.string.no_su_apk, Toast.LENGTH_LONG).show();
+        //            finish();
+        //        }
 
         new AsyncTask<Void, Void, Boolean>() {
 
