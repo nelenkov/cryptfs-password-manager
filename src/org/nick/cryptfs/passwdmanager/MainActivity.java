@@ -1,3 +1,4 @@
+
 package org.nick.cryptfs.passwdmanager;
 
 import android.app.Activity;
@@ -6,6 +7,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +25,8 @@ public class MainActivity extends Activity implements OnClickListener {
     private static final String ARG_NEW_PASSWD = "newPasswd";
     private static final String ARG_CURRENT_PASSWD = "currentPasswd";
 
+    private static final boolean IS_LOLLIPOP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+
     private EditText currentPasswdText;
     private EditText newPasswdText;
     private EditText confirmNewPasswdText;
@@ -30,6 +34,12 @@ public class MainActivity extends Activity implements OnClickListener {
     private Button changePasswordButon;
 
     private ChangePasswdTask changePasswdTask;
+
+    private String passwordType;
+    private boolean checkCurrentPassword = true;
+
+    // hacky...
+    private static boolean selinuxPolicyPatched = !IS_LOLLIPOP;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -66,10 +76,12 @@ public class MainActivity extends Activity implements OnClickListener {
             finish();
         }
 
-        if (!SuShell.isSuperUserInstalled(getApplicationContext())) {
-            Toast.makeText(this, R.string.no_su_apk, Toast.LENGTH_LONG).show();
-            finish();
-        }
+        // CM embeds Superuser in the settings package, so detecting by
+        // package name is not really doable any more
+        // if (!SuShell.isSuperUserInstalled(getApplicationContext())) {
+        // Toast.makeText(this, R.string.no_su_apk, Toast.LENGTH_LONG).show();
+        // finish();
+        // }
 
         new AsyncTask<Void, Void, Boolean>() {
 
@@ -82,7 +94,22 @@ public class MainActivity extends Activity implements OnClickListener {
             @Override
             protected Boolean doInBackground(Void... params) {
                 try {
-                    return SuShell.canGainSu(getApplicationContext());
+                    boolean canGainSu = SuShell.canGainSu(getApplicationContext());
+
+                    if (!selinuxPolicyPatched) {
+                        selinuxPolicyPatched = SuShell.patchLollipopPolicy();
+                    }
+
+                    boolean result = canGainSu && selinuxPolicyPatched;
+                    if (!result) {
+                        return result;
+                    }
+
+                    passwordType = CryptfsCommands.getPasswordType();
+                    checkCurrentPassword = passwordType == null ? true :
+                            !CryptfsCommands.PWTYPE_DEFAULT.equals(passwordType);
+
+                    return result;
                 } catch (Exception e) {
                     Log.e(TAG, "Error: " + e.getMessage(), e);
                     return false;
@@ -98,6 +125,7 @@ public class MainActivity extends Activity implements OnClickListener {
                             Toast.LENGTH_LONG).show();
                     finish();
                 } else {
+                    currentPasswdText.setEnabled(checkCurrentPassword);
                     changePasswordButon.setEnabled(true);
                 }
             }
@@ -116,11 +144,14 @@ public class MainActivity extends Activity implements OnClickListener {
     @Override
     public void onClick(View v) {
         String currentPasswd = currentPasswdText.getText().toString().trim();
-        if (isEmpty(currentPasswd)) {
-            currentPasswdText
-                    .setError(getString(R.string.current_passwd_required));
-            return;
+        if (checkCurrentPassword) {
+            if (isEmpty(currentPasswd)) {
+                currentPasswdText
+                        .setError(getString(R.string.current_passwd_required));
+                return;
+            }
         }
+
         String newPasswd = newPasswdText.getText().toString().trim();
         if (isEmpty(newPasswd)) {
             newPasswdText.setError(getString(R.string.new_passwd_required));
@@ -146,6 +177,13 @@ public class MainActivity extends Activity implements OnClickListener {
         DialogFragment confirmationDialog = ConfirmationDialogFragment
                 .newInstance(currentPasswd, newPasswd);
         confirmationDialog.show(getFragmentManager(), "confirmationDialog");
+    }
+
+    private void showPasswordChangeErrorDialog() {
+        DialogFragment errorDialog = ErrorDialogFragment.newInstance(
+                getResources().getString(R.string.password_change_error),
+                getResources().getString(R.string.failed_to_change_password));
+        errorDialog.show(getFragmentManager(), "passwordChangeErrorDialog");
     }
 
     private void changePasswd(String currentPasswd, String newPasswd) {
@@ -191,12 +229,26 @@ public class MainActivity extends Activity implements OnClickListener {
 
             currentPasswd = params[0];
             newPasswd = params[1];
-            if (!CryptfsCommands.checkCryptfsPassword(currentPasswd)) {
-                return PASSWD_INVALID;
+
+            if (activity.checkCurrentPassword) {
+                if (IS_LOLLIPOP) {
+                    if (!CryptfsCommands.checkCryptfsPasswordLollipop(currentPasswd)) {
+                        return PASSWD_INVALID;
+                    }
+                } else {
+                    if (!CryptfsCommands.checkCryptfsPassword(currentPasswd)) {
+                        return PASSWD_INVALID;
+                    }
+                }
             }
 
-            return CryptfsCommands.changeCryptfsPassword(newPasswd) ? PASSWD_CHANGED
-                    : PASSWD_CHANGE_ERROR;
+            if (IS_LOLLIPOP) {
+                return CryptfsCommands.changeCryptfsPasswordLollipop(newPasswd,
+                        currentPasswd) ? PASSWD_CHANGED : PASSWD_CHANGE_ERROR;
+            } else {
+                return CryptfsCommands.changeCryptfsPassword(newPasswd,
+                        currentPasswd) ? PASSWD_CHANGED : PASSWD_CHANGE_ERROR;
+            }
         }
 
         @Override
@@ -209,26 +261,25 @@ public class MainActivity extends Activity implements OnClickListener {
             activity.tooggleButton(true);
 
             switch (result) {
-            case PASSWD_INVALID:
-                activity.showInvalidPasswordError();
-                break;
-            case PASSWD_CHANGED:
-                activity.clearPasswords();
+                case PASSWD_INVALID:
+                    activity.showInvalidPasswordError();
+                    break;
+                case PASSWD_CHANGED:
+                    activity.toggleCurrentPasswordInput(true);
+                    activity.clearPasswords();
 
-                Toast.makeText(activity, R.string.successfuly_changed_password,
-                        Toast.LENGTH_LONG).show();
-                PasswordChangedDialogFragment successDialog = PasswordChangedDialogFragment
-                        .newInstance(newPasswd);
-                successDialog.show(activity.getFragmentManager(),
-                        "successDialog");
-                break;
-            case PASSWD_CHANGE_ERROR:
-
-                Toast.makeText(activity, R.string.failed_to_change_password,
-                        Toast.LENGTH_LONG).show();
-                break;
-            default:
-                // detached or cancelled, do nothing
+                    Toast.makeText(activity, R.string.successfuly_changed_password,
+                            Toast.LENGTH_LONG).show();
+                    PasswordChangedDialogFragment successDialog = PasswordChangedDialogFragment
+                            .newInstance(newPasswd);
+                    successDialog.show(activity.getFragmentManager(),
+                            "successDialog");
+                    break;
+                case PASSWD_CHANGE_ERROR:
+                    activity.showPasswordChangeErrorDialog();
+                    break;
+                default:
+                    // detached or cancelled, do nothing
             }
         }
     }
@@ -239,6 +290,10 @@ public class MainActivity extends Activity implements OnClickListener {
         currentPasswdText.setText("");
         newPasswdText.setText("");
         confirmNewPasswdText.setText("");
+    }
+
+    private void toggleCurrentPasswordInput(boolean enable) {
+        currentPasswdText.setEnabled(enable);
     }
 
     private void clearErrors() {

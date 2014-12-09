@@ -1,4 +1,10 @@
+
 package org.nick.cryptfs.passwdmanager;
+
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.util.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -7,11 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.util.Log;
+import java.util.List;
 
 public class SuShell {
 
@@ -19,10 +21,12 @@ public class SuShell {
 
     // WARNING: setting this to true will dump passwords to logcat
     // set to false for release
-    static final boolean DEBUG = false;
+    static final boolean DEBUG = true;
 
-    private static final String CHAINSDD_SU = "com.noshufou.android.su";
-    private static final String CHAINFIRE_SU = "eu.chainfire.supersu";
+    private static final String[] SU_PACKAGES = {
+            "com.noshufou.android.su",
+            "eu.chainfire.supersu", "com.koushikdutta.superuser"
+    };
 
     private SuShell() {
     }
@@ -48,20 +52,14 @@ public class SuShell {
     }
 
     public static boolean isSuperUserInstalled(Context ctx) {
-        PackageInfo pi = findPackage(ctx, CHAINSDD_SU);
-        if (pi != null) {
-            if (DEBUG) {
-                Log.d(TAG, "Found superuser: " + pi.packageName);
+        for (String suPackage : SU_PACKAGES) {
+            PackageInfo pi = findPackage(ctx, suPackage);
+            if (pi != null) {
+                if (DEBUG) {
+                    Log.d(TAG, "Found superuser: " + pi.packageName);
+                }
+                return true;
             }
-            return true;
-        }
-
-        pi = findPackage(ctx, CHAINFIRE_SU);
-        if (pi != null) {
-            if (DEBUG) {
-                Log.d(TAG, "Found superuser: " + pi.packageName);
-            }
-            return true;
         }
 
         return false;
@@ -84,7 +82,9 @@ public class SuShell {
     }
 
     public static ArrayList<String> run(String shell, String command) {
-        return run(shell, new String[] { command });
+        return run(shell, new String[] {
+                command
+        });
     }
 
     public static ArrayList<String> run(String shell, ArrayList<String> commands) {
@@ -156,16 +156,55 @@ public class SuShell {
         return output.toString();
     }
 
-    public boolean detectValidSuInPath() {
+    public static boolean detectValidSuInPath() {
         String[] pathToTest = System.getenv("PATH").split(":");
 
         for (String path : pathToTest) {
             File su = new File(path + "/su");
             if (su.exists()) {
-                // should check if it is suid 
+                // should check if it is suid
                 if (DEBUG) {
                     Log.d(TAG, "Found su at " + su.getAbsolutePath());
                 }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean findInPath(String cmd) {
+        String[] pathToTest = System.getenv("PATH").split(":");
+
+        for (String path : pathToTest) {
+            File cmdFile = new File(path, cmd);
+            if (cmdFile.exists()) {
+                if (DEBUG) {
+                    Log.d(TAG, "Found su at " + cmdFile.getAbsolutePath());
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean patchLollipopPolicy() {
+        if (!findInPath("supolicy")) {
+            return false;
+        }
+
+        String cmd = "supolicy --live 'allow vdc init fifo_file {read write getattr}'";
+        List<String> output = runWithSu(cmd);
+        if (output.isEmpty()) {
+            return false;
+        }
+
+        for (String line : output) {
+            if (line.contains("Success")) {
+                return true;
             }
         }
 
