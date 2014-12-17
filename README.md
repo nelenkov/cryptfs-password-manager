@@ -7,7 +7,14 @@ disk encryption password. Essentially the same as
  # vdc cryptfs changepw <newpassword>
 ```
 
+For Lollipop: 
+
+```
+# vdc cryptfs changepw password <passphrase in hex>
+```
+
 but easier to use and slightly more foolproof. Requires root access.
+
 
 **WARNING**
 
@@ -18,6 +25,20 @@ PASSWORD. You have been warned, use at your own risk!
  
 Why and how to use this
 -----------------------
+
+Update: On Android 5.0+ devices with hardware-backed keystore support the 
+decryption key is bound to the device, so a simple unlock password is not 
+necessarily easily crackable. Details here: 
+
+http://source.android.com/devices/tech/encryption/index.html
+
+Also see: 
+
+http://nelenkov.blogspot.com/2014/10/revisiting-android-disk-encryption.html
+
+CyanogenMod 11 has a built-in system UI for setting the encryption password, 
+so you do not need this tool. That said, it should work fine on CM11, but 
+it may not work on CM12.
 
 Android 3.0 (Honeycomb) introduced disk encryption and it has been available on
 all subsequent versions. It encrypts the data partition with a key protected by
@@ -34,6 +55,9 @@ password simply:
  (initially the same as the unlock password/PIN)
  2. Enter and confirm the new password
  3. Hit 'Change password'
+
+(If you are using a pattern lock (5.0+), enter the dots as a sequence of 
+numbers, where '1' is top left and '9' -- bottom right.)
 
 The changes take effect immediately, but you will only be required to enter 
 the new password the next time you boot your device. Make sure you choose a 
