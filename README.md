@@ -7,6 +7,8 @@ disk encryption password. Essentially the same as
  # vdc cryptfs changepw <newpassword>
 ```
 
+but easier to use and slightly more foolproof. Requires root access.
+
 For Lollipop: 
 
 ```
@@ -14,14 +16,12 @@ For Lollipop:
 ```
 
 You may also need to relax the SELinux policy in order to see the output of 
-this command. If you have a recent SuperSU installed, you can use this 
-command: 
+this command. If you have a recent SuperSU installed, you can use the 
+command below: 
 
 ```
 # supolicy --live 'allow vdc devpts chr_file {read write getattr ioctl}'
 ```
-
-but easier to use and slightly more foolproof. Requires root access.
 
 
 **WARNING**
@@ -34,7 +34,7 @@ PASSWORD. You have been warned, use at your own risk!
 Why and how to use this
 -----------------------
 
-Update: On Android 5.0+ devices with hardware-backed keystore support the 
+**Lollipop**: On Android 5.0+ devices with hardware-backed keystore support the 
 decryption key is bound to the device, so a simple unlock password is not 
 necessarily easily crackable. Details here: 
 
@@ -44,9 +44,10 @@ Also see:
 
 http://nelenkov.blogspot.com/2014/10/revisiting-android-disk-encryption.html
 
-CyanogenMod 11 has a built-in system UI for setting the encryption password, 
-so you do not need this tool. That said, it should work fine on CM11, but 
-it may not work on CM12.
+**CyanogenMod**: CM11 has a built-in system UI for setting the encryption 
+password, so you do not need this tool. That said, it should work fine on CM11, 
+but it may not work on CM12.
+
 
 Android 3.0 (Honeycomb) introduced disk encryption and it has been available on
 all subsequent versions. It encrypts the data partition with a key protected by
