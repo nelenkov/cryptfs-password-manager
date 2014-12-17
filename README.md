@@ -13,6 +13,14 @@ For Lollipop:
 # vdc cryptfs changepw password <passphrase in hex>
 ```
 
+You may also need to relax the SELinux policy in order to see the output of 
+this command. If you have a recent SuperSU installed, you can use this 
+command: 
+
+```
+# supolicy --live 'allow vdc devpts chr_file {read write getattr ioctl}'
+```
+
 but easier to use and slightly more foolproof. Requires root access.
 
 
