@@ -100,7 +100,9 @@ public class MainActivity extends Activity implements OnClickListener {
                         selinuxPolicyPatched = SuShell.patchLollipopPolicy();
                     }
 
-                    boolean result = canGainSu && selinuxPolicyPatched;
+                    boolean cyanogenmod = SuShell.isCyanogenmod();
+
+                    boolean result = canGainSu && (selinuxPolicyPatched || cyanogenmod);
                     if (!result) {
                         return result;
                     }
