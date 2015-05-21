@@ -181,7 +181,7 @@ public class SuShell {
             File cmdFile = new File(path, cmd);
             if (cmdFile.exists()) {
                 if (DEBUG) {
-                    Log.d(TAG, "Found su at " + cmdFile.getAbsolutePath());
+                    Log.d(TAG, "Found " + cmd + " at " + cmdFile.getAbsolutePath());
                 }
 
                 return true;
@@ -211,4 +211,23 @@ public class SuShell {
         return false;
     }
 
+    public static boolean isCyanogenmod() {
+        if (!findInPath("uname")) {
+            return false;
+        }
+
+        String cmd = "uname -a";
+        List<String> output = runWithShell(cmd);
+        if (output.isEmpty()) {
+            return false;
+        }
+
+        for (String line : output) {
+            if (line.contains("-CM-") || line.contains("-cyanogenmod-")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
