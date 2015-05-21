@@ -5,7 +5,7 @@
         or you will NOT be able to use your device.\nUse at your own risk!</string>
     <string name="title_activity_main">@string/app_name</string>
     <string name="confirmation_dialog_title">Confirm password change</string>
-    <string name="confirmation_dialog_message">Are you sure you wanto change the 
+    <string name="confirmation_dialog_message">Are you sure you want to change the 
         device encryption password?\nYou will need to enter the new password 
         at next boot, make sure you remember it!</string>
     <string name="invalid_password">Invalid password</string>

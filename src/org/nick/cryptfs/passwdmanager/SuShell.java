@@ -181,7 +181,7 @@ public class SuShell {
             File cmdFile = new File(path, cmd);
             if (cmdFile.exists()) {
                 if (DEBUG) {
-                    Log.d(TAG, "Found su at " + cmdFile.getAbsolutePath());
+                    Log.d(TAG, "Found " + cmd + " at " + cmdFile.getAbsolutePath());
                 }
 
                 return true;
