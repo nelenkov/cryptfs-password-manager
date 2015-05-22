@@ -21,7 +21,7 @@ public class SuShell {
 
     // WARNING: setting this to true will dump passwords to logcat
     // set to false for release
-    static final boolean DEBUG = true;
+    static final boolean DEBUG = false;
 
     private static final String[] SU_PACKAGES = {
             "com.noshufou.android.su",
