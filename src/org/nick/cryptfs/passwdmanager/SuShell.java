@@ -21,7 +21,7 @@ public class SuShell {
 
     // WARNING: setting this to true will dump passwords to logcat
     // set to false for release
-    static final boolean DEBUG = true;
+    static final boolean DEBUG = false;
 
     private static final String[] SU_PACKAGES = {
             "com.noshufou.android.su",
@@ -212,22 +212,16 @@ public class SuShell {
     }
 
     public static boolean isCyanogenmod() {
-        if (!findInPath("uname")) {
+        if (!findInPath("grep")) {
             return false;
         }
 
-        String cmd = "uname -a";
+        String cmd = "grep ro.cm.version /system/build.prop";
         List<String> output = runWithShell(cmd);
         if (output.isEmpty()) {
             return false;
         }
 
-        for (String line : output) {
-            if (line.contains("-CM-") || line.contains("-cyanogenmod-")) {
-                return true;
-            }
-        }
-
-        return false;
+        return true;
     }
 }

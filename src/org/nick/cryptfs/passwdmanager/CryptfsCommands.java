@@ -14,6 +14,8 @@ public class CryptfsCommands {
 
     private static final boolean IS_JB = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
 
+    private static final boolean IS_M = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
+
     private static final String GET_PROP_CMD_PATH = "/system/bin/getprop";
     private static final String CRYPTO_STATE_PROP = "ro.crypto.state";
     private static final String CRYPTO_STATE_ENCRYPTED = "encrypted";
@@ -51,8 +53,9 @@ public class CryptfsCommands {
     }
 
     public static boolean checkCryptfsPasswordLollipop(String password) {
+        String encodedPassword = IS_M ? password : toHexAscii(password);
         List<String> response = SuShell.runWithSu(String.format(
-                CRYPTFS_VERIFYPW_LOLLIPOP_CMD, toHexAscii(password)));
+                CRYPTFS_VERIFYPW_LOLLIPOP_CMD, encodedPassword));
         return checkVdcResponse(response);
     }
 
@@ -155,12 +158,14 @@ public class CryptfsCommands {
 
     public static boolean changeCryptfsPasswordLollipop(String newPassword,
             String oldPassword) {
+        String encodedNewPassword = IS_M ? newPassword : toHexAscii(newPassword);
+
         String command = CRYPTFS_CHANGEPW_PASSWORD_CMD;
         if (PIN_PATTERN.matcher(newPassword).matches()) {
             command = CRYPTFS_CHANGEPW_PIN_CMD;
         }
         List<String> response = SuShell.run("su",
-                String.format(command, toHexAscii(newPassword)));
+                String.format(command, encodedNewPassword));
 
         boolean changeResult = checkVdcResponse(response);
         boolean verifyResult = checkCryptfsPasswordLollipop(newPassword);
@@ -183,12 +188,13 @@ public class CryptfsCommands {
     }
 
     private static boolean changePasswordNoVerifyLollipop(String newPassword) {
+        String encodedPassword = IS_M ? newPassword : toHexAscii(newPassword);
         String command = CRYPTFS_CHANGEPW_PASSWORD_CMD;
         if (PIN_PATTERN.matcher(newPassword).matches()) {
             command = CRYPTFS_CHANGEPW_PIN_CMD;
         }
         List<String> response = SuShell.run("su",
-                String.format(command, toHexAscii(newPassword)));
+                String.format(command, encodedPassword));
 
         return checkVdcResponse(response);
     }

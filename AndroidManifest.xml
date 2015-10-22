@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.nick.cryptfs.passwdmanager"
-    android:versionCode="1230"
-    android:versionName="1.2.3" >
+    android:versionCode="1250"
+    android:versionName="1.2.5" >
 
     <uses-sdk
         android:minSdkVersion="11"
