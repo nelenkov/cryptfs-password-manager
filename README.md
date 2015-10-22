@@ -9,10 +9,16 @@ disk encryption password. Essentially the same as
 
 but easier to use and slightly more foolproof. Requires root access.
 
-For Lollipop: 
+For Lollipop (5.x): 
 
 ```
 # vdc cryptfs changepw password <passphrase in hex>
+```
+
+For Marshmallow (6.0): 
+
+```
+# vdc cryptfs changepw password <passphrase>
 ```
 
 You may also need to relax the SELinux policy in order to see the output of 
