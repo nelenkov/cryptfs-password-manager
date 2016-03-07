@@ -50,10 +50,17 @@ Also see:
 
 http://nelenkov.blogspot.com/2014/10/revisiting-android-disk-encryption.html
 
-**CyanogenMod**: CM11 has a built-in system UI for setting the encryption 
+**CyanogenMod 11**: CM11 has a built-in system UI for setting the encryption 
 password, so you do not need this tool. That said, it should work fine on CM11, 
 but it may not work on CM12.
 
+**CyanogenMod 13**: CM13 seems to have change the syntax of the `cryptfs` 
+utility. Using the wrong syntax might render your data useless, exercise 
+caution. The app currently does NOT support CM13.
+
+```
+Usage: cryptfs changepw default|password|pin|pattern [currentpasswd] default|password|pin|pattern [newpasswd]
+```
 
 Android 3.0 (Honeycomb) introduced disk encryption and it has been available on
 all subsequent versions. It encrypts the data partition with a key protected by
