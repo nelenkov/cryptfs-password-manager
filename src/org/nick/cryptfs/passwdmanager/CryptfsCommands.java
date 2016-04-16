@@ -53,7 +53,7 @@ public class CryptfsCommands {
     }
 
     public static boolean checkCryptfsPasswordLollipop(String password) {
-        String encodedPassword = IS_M ? password : toHexAscii(password);
+        String encodedPassword = IS_M ? escape(password) : toHexAscii(password);
         List<String> response = SuShell.runWithSu(String.format(
                 CRYPTFS_VERIFYPW_LOLLIPOP_CMD, encodedPassword));
         return checkVdcResponse(response);
@@ -158,7 +158,7 @@ public class CryptfsCommands {
 
     public static boolean changeCryptfsPasswordLollipop(String newPassword,
             String oldPassword) {
-        String encodedNewPassword = IS_M ? newPassword : toHexAscii(newPassword);
+        String encodedNewPassword = IS_M ? escape(newPassword) : toHexAscii(newPassword);
 
         String command = CRYPTFS_CHANGEPW_PASSWORD_CMD;
         if (PIN_PATTERN.matcher(newPassword).matches()) {
@@ -188,7 +188,7 @@ public class CryptfsCommands {
     }
 
     private static boolean changePasswordNoVerifyLollipop(String newPassword) {
-        String encodedPassword = IS_M ? newPassword : toHexAscii(newPassword);
+        String encodedPassword = IS_M ? escape(newPassword) : toHexAscii(newPassword);
         String command = CRYPTFS_CHANGEPW_PASSWORD_CMD;
         if (PIN_PATTERN.matcher(newPassword).matches()) {
             command = CRYPTFS_CHANGEPW_PIN_CMD;
