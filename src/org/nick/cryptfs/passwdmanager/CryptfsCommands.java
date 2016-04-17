@@ -23,17 +23,17 @@ public class CryptfsCommands {
     private static final String CRYPTFS_VERIFYPW_CMD = VDC_CMD_PATH
             + " cryptfs verifypw '%s'";
     private static final String CRYPTFS_VERIFYPW_LOLLIPOP_CMD = VDC_CMD_PATH
-            + " cryptfs verifypw %s";
+            + " cryptfs verifypw '%s'";
     private static final String CRYPTFS_CHANGEPW_CMD = VDC_CMD_PATH
             + " cryptfs changepw '%s'";
     private static final String CRYPTFS_CHANGEPW_PIN_CMD = VDC_CMD_PATH
-            + " cryptfs changepw pin %s";
+            + " cryptfs changepw pin '%s'";
     private static final String CRYPTFS_CHANGEPW_PASSWORD_CMD = VDC_CMD_PATH
-            + " cryptfs changepw password %s";
+            + " cryptfs changepw password '%s'";
     private static final String CRYPTFS_CHANGEPW_PIN_CM_CMD = VDC_CMD_PATH
-            + " cryptfs changepw pin %s %s";
+            + " cryptfs changepw pin '%s' '%s'";
     private static final String CRYPTFS_CHANGEPW_PASSWORD_CM_CMD = VDC_CMD_PATH
-            + " cryptfs changepw password %s %s";
+            + " cryptfs changepw password '%s' '%s'";
 
     private static final String CRYPTFS_GETPWTYPE_CMD = VDC_CMD_PATH
             + " cryptfs getpwtype";
