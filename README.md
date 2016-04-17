@@ -54,9 +54,9 @@ http://nelenkov.blogspot.com/2014/10/revisiting-android-disk-encryption.html
 password, so you do not need this tool. That said, it should work fine on CM11, 
 but it may not work on CM12.
 
-**CyanogenMod 13**: CM13 seems to have change the syntax of the `cryptfs` 
-utility. Using the wrong syntax might render your data useless, exercise 
-caution. The app currently does NOT support CM13.
+**CyanogenMod 13**: CM13 (and some vendors, most notably LG) seems to have 
+changed the syntax of the `cryptfs` utility. Using the wrong syntax might 
+render your data useless, exercise caution. 
 
 ```
 Usage: cryptfs changepw default|password|pin|pattern [currentpasswd] default|password|pin|pattern [newpasswd]
