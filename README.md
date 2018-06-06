@@ -111,3 +111,9 @@ Acknowledgments
 Borrows some code from https://github.com/project-voodoo/ota-rootkeeper-app, 
 under the WTFPL license. 
 
+Tip jar
+-------
+
+Bitcoin: 1DXhWFS9SL78GGyX7Luao9EuP5SxtDiPG1
+
+
