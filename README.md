@@ -114,6 +114,6 @@ under the WTFPL license.
 Tip jar
 -------
 
-Bitcoin: 1DXhWFS9SL78GGyX7Luao9EuP5SxtDiPG1
+Bitcoin: `1DXhWFS9SL78GGyX7Luao9EuP5SxtDiPG1`
 
 
